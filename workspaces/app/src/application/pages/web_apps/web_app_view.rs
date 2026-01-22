@@ -674,7 +674,8 @@ impl WebAppView {
 
         self.url_row.connect_changed(move |entry_row| {
             let input = entry_row.text().to_string();
-            let is_valid = Url::parse(&input).is_ok();
+            let is_valid = Url::parse(&input)
+                .is_ok_and(|url| url.domain().is_some() || url.host_str().is_some());
 
             debug!(is_valid, input, "Validate input: {}", entry_row.title());
 
