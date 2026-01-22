@@ -203,15 +203,30 @@ fn generate_changelog() -> Result<(String, Version)> {
         bail!("Could not determine last released version from git");
     };
 
-    let Some(Ok(new_release_version)) = changelog
+    let Ok(Some(Ok(new_release_version))) = changelog
         .bump_version()
-        .inspect_err(|err| {
+        .inspect_err(|error| {
             error!(
-                error = err.to_string(),
+                error = error.to_string(),
                 "Failed to create a new semantic version"
             );
-        })?
-        .map(|version| Version::parse(&version[1..]))
+        })
+        .map(|version| {
+            let Some(version) = version else {
+                if *DRY_RUN.get_value() {
+                    let mut new_version = last_released_version.clone();
+                    new_version.patch += 1;
+                    info!("No new changes detected, using dry-run version: {new_version}");
+                    return Some(Ok(new_version));
+                }
+                error!("No new changes detected");
+                return None;
+            };
+
+            Some(Version::parse(&version[1..]).inspect_err(|error| {
+                error!(error = error.to_string(), "Failed to parse version");
+            }))
+        })
     else {
         bail!("Failed to create a new semantic version, no new changes?")
     };
