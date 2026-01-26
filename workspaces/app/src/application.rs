@@ -12,7 +12,7 @@ use common::{
     utils,
 };
 use error_dialog::ErrorDialog;
-use gtk::{IconTheme, Image, gdk};
+use gtk::{IconTheme, Image, Settings, gdk, glib::object::ObjectExt};
 use pages::{Page, Pages};
 use std::{cell::RefCell, path::Path, rc::Rc};
 use tracing::{debug, error};
@@ -32,6 +32,8 @@ pub struct App {
 impl App {
     pub fn new(adw_application: &libadwaita::Application) -> Rc<Self> {
         Rc::new({
+            let settings = Settings::default().expect("Could not load gtk settings");
+            settings.set_property("gtk-icon-theme-name", "Adwaita");
             let icon_theme = Rc::new(IconTheme::for_display(
                 &gdk::Display::default().expect("Could not connect to display"),
             ));
@@ -58,6 +60,8 @@ impl App {
 
     pub fn init(self: &Rc<Self>) {
         if let Err(error) = (|| -> Result<()> {
+            debug!("Using icon theme: {}", self.icon_theme.theme_name());
+
             // Order matters!
             self.window.init(self);
             self.error_dialog.init(self);
@@ -124,6 +128,7 @@ impl App {
     fn add_system_icon_paths(self: &Rc<Self>) {
         if utils::env::is_flatpak_container() {
             for path in self.dirs.system_icons() {
+                debug!(path = %path.display(), "Adding system icon path");
                 self.add_icon_search_path(&path);
             }
         }
