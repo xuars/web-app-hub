@@ -191,12 +191,13 @@ fn generate_changelog() -> Result<(String, Version)> {
 
     let Ok(last_released_version) = changelog
         .releases
-        .first()
+        .iter()
+        .find(|release| release.version.is_some())
         .and_then(|release| {
             release
                 .version
                 .clone()
-                .map(|version| Version::parse(&version[1..]))
+                .map(|version| Version::parse(&version[1..]).inspect_err(|error| error!(?error)))
         })
         .unwrap_or(Ok(Version::new(0, 0, 0)))
     else {
