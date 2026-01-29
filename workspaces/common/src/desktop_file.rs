@@ -46,6 +46,7 @@ pub enum Keys {
     Exec,
     Icon,
     StartupWMClass,
+    Categories,
 }
 impl Display for Keys {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
@@ -64,6 +65,7 @@ impl Display for Keys {
             Self::Exec => write!(f, "Exec"),
             Self::Icon => write!(f, "Icon"),
             Self::StartupWMClass => write!(f, "StartupWMClass"),
+            Self::Categories => write!(f, "Categories"),
         }
     }
 }
@@ -129,6 +131,42 @@ fn map_to_path_option(value: &str) -> Option<PathBuf> {
         None
     } else {
         Some(Path::new(value).to_path_buf())
+    }
+}
+
+/// <https://specifications.freedesktop.org/menu/latest/category-registry.html>
+pub enum Categories {
+    AudioVideo,
+    Audio,
+    Video,
+    Development,
+    Education,
+    Game,
+    Graphics,
+    Network,
+    Office,
+    Science,
+    Settings,
+    System,
+    Utility,
+}
+impl Display for Categories {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        match self {
+            Self::AudioVideo => write!(f, "AudioVideo"),
+            Self::Audio => write!(f, "AudioVideo;Audio"),
+            Self::Video => write!(f, "AudioVideo;Video"),
+            Self::Development => write!(f, "Development"),
+            Self::Education => write!(f, "Education"),
+            Self::Game => write!(f, "Game"),
+            Self::Graphics => write!(f, "Graphics"),
+            Self::Network => write!(f, "Network"),
+            Self::Office => write!(f, "Office"),
+            Self::Science => write!(f, "Science"),
+            Self::Settings => write!(f, "Settings"),
+            Self::System => write!(f, "System"),
+            Self::Utility => write!(f, "Utility"),
+        }
     }
 }
 
@@ -422,6 +460,17 @@ impl DesktopFile {
                 .desktop_entry(&Keys::Profile.to_string())
                 .unwrap_or_default()
         );
+    }
+
+    pub fn get_category(&self) -> Option<String> {
+        self.desktop_entry
+            .desktop_entry(&Keys::Categories.to_string())
+            .and_then(map_to_string_option)
+    }
+
+    pub fn set_category(&mut self, categories: &Categories) {
+        self.desktop_entry
+            .add_desktop_entry(Keys::Categories.to_string(), categories.to_string());
     }
 
     pub fn copy_profile_config_to_profile_path(&self, profile_path: &Path) -> Result<()> {
@@ -839,6 +888,9 @@ impl DesktopFile {
         new_desktop_file.set_isolated(entries.isolate);
         new_desktop_file.set_maximized(entries.maximize);
         new_desktop_file.set_profile_path(&entries.profile_path);
+        if new_desktop_file.get_category().is_none() {
+            new_desktop_file.set_category(&Categories::Network);
+        }
 
         Ok(new_desktop_file)
     }
