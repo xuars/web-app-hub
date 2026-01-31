@@ -180,7 +180,7 @@ impl Browser {
 
         // Save in own app
         let app_profile_path = || -> Result<PathBuf> {
-            let path = self.app_dirs.profiles.join(&self.id);
+            let path = self.app_dirs.app_data_profiles.join(&self.id);
             Ok(path)
         };
 
@@ -188,7 +188,7 @@ impl Browser {
         let browser_profile_path = || -> Result<PathBuf> {
             let path = self
                 .app_dirs
-                .flatpak
+                .user_flatpak
                 .join(&self.id)
                 .join("data")
                 .join(config::APP_NAME_HYPHEN.get_value())
@@ -489,7 +489,7 @@ impl BrowserConfigs {
 
         let mut browser_configs = Vec::new();
         let browser_config_files =
-            utils::files::get_entries_in_dir(&self.app_dirs.browser_configs).unwrap_or_default();
+            utils::files::get_entries_in_dir(&self.app_dirs.app_config_browser_configs).unwrap_or_default();
 
         for file in &browser_config_files {
             let file_name = file.file_name().to_string_lossy().to_string();
@@ -526,7 +526,7 @@ impl BrowserConfigs {
             let desktop_file = match (|| -> Result<DesktopEntry> {
                 let desktop_file_path = self
                     .app_dirs
-                    .browser_desktop_files
+                    .app_config_browser_desktop_files
                     .join(
                         file_path
                             .file_stem()

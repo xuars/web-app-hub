@@ -26,19 +26,19 @@ fn main() -> Result<()> {
 
 fn create_config_symlinks(app_dirs: &AppDirs) {
     let config_path = dev_config_path();
-    let _ = utils::files::create_symlink(&config_path, &app_dirs.config);
+    let _ = utils::files::create_symlink(&config_path, &app_dirs.app_config);
 }
 
 fn create_data_symlinks(app_dirs: &AppDirs) {
     let data_path = dev_data_path();
 
-    let _ = utils::files::create_symlink(&data_path, &app_dirs.data);
-    let _ = utils::files::create_symlink(&data_path.join("applications"), &app_dirs.applications);
+    let _ = utils::files::create_symlink(&data_path, &app_dirs.app_data);
+    let _ = utils::files::create_symlink(&data_path.join("applications"), &app_dirs.user_applications);
 }
 
 fn copy_dev_web_apps(app_dirs: &AppDirs) {
     let dev_desktop_files = dev_assets_path().join("desktop-files");
-    let user_applications_dir = &app_dirs.applications;
+    let user_applications_dir = &app_dirs.user_applications;
 
     for desktop_file in &utils::files::get_entries_in_dir(&dev_desktop_files).unwrap() {
         let id = desktop_file
@@ -70,7 +70,7 @@ fn copy_dev_web_apps(app_dirs: &AppDirs) {
 fn install_app_desktop_file(app_dirs: &AppDirs) -> Result<()> {
     let file_name = desktop_file_name();
     let desktop_file = assets_path().join("desktop").join(&file_name);
-    let save_file = app_dirs.applications.join(file_name);
+    let save_file = app_dirs.user_applications.join(file_name);
 
     fs::copy(desktop_file, save_file).context("Desktop file copy failed")?;
     Ok(())

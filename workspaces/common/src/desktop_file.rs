@@ -427,7 +427,7 @@ impl DesktopFile {
 
         let config_path = self
             .app_dirs
-            .config
+            .app_config
             .join("profiles")
             .join(&browser.config_name);
         if config_path.is_dir() {
@@ -436,11 +436,11 @@ impl DesktopFile {
 
         match browser.base {
             Base::Chromium => {
-                let config_path = self.app_dirs.config.join("profiles").join("chromium");
+                let config_path = self.app_dirs.app_config.join("profiles").join("chromium");
                 copy_profile_config(&config_path)
             }
             Base::Firefox => {
-                let config_path = self.app_dirs.config.join("profiles").join("firefox");
+                let config_path = self.app_dirs.app_config.join("profiles").join("firefox");
                 copy_profile_config(&config_path)
             }
             Base::None => Ok(()),
@@ -719,7 +719,7 @@ impl DesktopFile {
     }
 
     fn get_save_path(&self) -> Result<PathBuf> {
-        let applications_dir = &self.app_dirs.applications;
+        let applications_dir = &self.app_dirs.user_applications;
         let file_name = format!(
             "{}-{}-{}",
             self.get_browser()

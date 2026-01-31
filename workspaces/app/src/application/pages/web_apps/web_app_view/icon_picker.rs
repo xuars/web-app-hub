@@ -461,7 +461,7 @@ impl IconPicker {
             .get_id()
             .context("No file id on DesktopFile")?;
 
-        let icon_dir = &self.app.dirs.icons;
+        let icon_dir = &self.app.dirs.app_data_icons;
         let file_name = sanitize_filename::sanitize(format!("{app_id}.png"));
         let save_path = icon_dir.join(&file_name);
 

@@ -13,25 +13,25 @@ use tracing::debug;
 
 #[derive(Default)]
 pub struct AppDirs {
-    pub home: PathBuf,
-    pub data: PathBuf,
-    pub config: PathBuf,
+    pub user_home: PathBuf,
+    pub app_data: PathBuf,
+    pub app_config: PathBuf,
     pub system_data: Vec<PathBuf>,
     pub user_data: PathBuf,
     pub user_config: PathBuf,
     pub system_icons: Vec<PathBuf>,
-    pub applications: PathBuf,
-    pub profiles: PathBuf,
-    pub icons: PathBuf,
-    pub browser_configs: PathBuf,
-    pub browser_desktop_files: PathBuf,
-    pub flatpak: PathBuf,
+    pub user_applications: PathBuf,
+    pub app_data_profiles: PathBuf,
+    pub app_data_icons: PathBuf,
+    pub app_config_browser_configs: PathBuf,
+    pub app_config_browser_desktop_files: PathBuf,
+    pub user_flatpak: PathBuf,
 }
 impl AppDirs {
     pub fn new() -> Result<Rc<Self>> {
         Rc::new(Self::default());
 
-        let home = glib::home_dir();
+        let user_home = glib::home_dir();
         let user_data = glib::user_data_dir();
         let app_data = user_data.join(config::APP_NAME_HYPHEN.get_value());
         let user_config = glib::user_config_dir();
@@ -39,28 +39,28 @@ impl AppDirs {
         let system_data = glib::system_data_dirs();
 
         let system_icons = Self::build_system_icon_paths(&system_data);
-        let applications = Self::build_applications_path(&user_data)?;
-        let profiles = Self::build_profiles_path(&app_data)?;
-        let icons = Self::build_icons_path(&app_data)?;
-        let browser_configs = Self::build_browser_configs_path(&app_config)?;
-        let browser_desktop_files = Self::build_browser_desktop_files_path(&app_config)?;
-        let flatpak = Self::build_flatpak_path(&home);
+        let user_applications = Self::build_applications_path(&user_data)?;
+        let app_data_profiles = Self::build_profiles_path(&app_data)?;
+        let app_data_icons = Self::build_icons_path(&app_data)?;
+        let app_config_browser_configs = Self::build_browser_configs_path(&app_config)?;
+        let app_config_browser_desktop_files = Self::build_browser_desktop_files_path(&app_config)?;
+        let user_flatpak = Self::build_flatpak_path(&user_home);
 
         Ok(Rc::new(Self {
-            home,
-            data: app_data,
-            config: app_config,
+            user_home,
+            app_data,
+            app_config,
             system_data,
             user_data,
             user_config,
 
             system_icons,
-            applications,
-            profiles,
-            icons,
-            browser_configs,
-            browser_desktop_files,
-            flatpak,
+            user_applications,
+            app_data_profiles,
+            app_data_icons,
+            app_config_browser_configs,
+            app_config_browser_desktop_files,
+            user_flatpak,
         }))
     }
 
