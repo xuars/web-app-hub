@@ -48,6 +48,16 @@ pub struct DesktopFile {
     app_dirs: Rc<AppDirs>,
 }
 impl DesktopFile {
+    pub fn is_owned(desktop_file_path: &Path) -> Result<bool> {
+        let desktop_entry = DesktopEntry::from_path(desktop_file_path, None::<&[String]>)?;
+        let is_owned = desktop_entry
+            .desktop_entry(&Key::Gwa.to_string())
+            .and_then(map_to_bool_option)
+            .is_some_and(|is_owned| is_owned);
+
+        Ok(is_owned)
+    }
+
     pub fn new(browser_configs: &Rc<BrowserConfigs>, app_dirs: &Rc<AppDirs>) -> Self {
         let desktop_entry = DesktopEntry::from_appid(String::new());
         let mut this = Self {
