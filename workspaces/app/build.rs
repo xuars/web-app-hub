@@ -33,7 +33,8 @@ fn create_data_symlinks(app_dirs: &AppDirs) {
     let data_path = dev_data_path();
 
     let _ = utils::files::create_symlink(&data_path, &app_dirs.app_data);
-    let _ = utils::files::create_symlink(&data_path.join("applications"), &app_dirs.user_applications);
+    let _ =
+        utils::files::create_symlink(&data_path.join("applications"), &app_dirs.user_applications);
 }
 
 fn copy_dev_web_apps(app_dirs: &AppDirs) {

@@ -263,9 +263,7 @@ impl BrowserConfigs {
     }
 
     pub fn get_all_browsers(&self) -> &Vec<Rc<Browser>> {
-        self.all_browsers
-            .get()
-            .expect("Browsers are uninitialized")
+        self.all_browsers.get().expect("Browsers are uninitialized")
     }
 
     pub fn get_flatpak_browsers(&self) -> Vec<Rc<Browser>> {
@@ -489,7 +487,8 @@ impl BrowserConfigs {
 
         let mut browser_configs = Vec::new();
         let browser_config_files =
-            utils::files::get_entries_in_dir(&self.app_dirs.app_config_browser_configs).unwrap_or_default();
+            utils::files::get_entries_in_dir(&self.app_dirs.app_config_browser_configs)
+                .unwrap_or_default();
 
         for file in &browser_config_files {
             let file_name = file.file_name().to_string_lossy().to_string();
