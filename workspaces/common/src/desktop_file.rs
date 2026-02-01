@@ -59,15 +59,23 @@ impl DesktopFile {
     }
 
     pub fn new(browser_configs: &Rc<BrowserConfigs>, app_dirs: &Rc<AppDirs>) -> Self {
-        let desktop_entry = DesktopEntry::from_appid(String::new());
-        let mut this = Self {
+        let mut desktop_entry = DesktopEntry::from_appid(String::new());
+
+        let random_id: String = rand::thread_rng()
+            .sample_iter(&Alphanumeric)
+            .take(8)
+            .map(char::from)
+            .collect();
+        desktop_entry.add_desktop_entry(Key::Id.to_string(), random_id);
+
+        let version = config::VERSION.get_value().clone();
+        desktop_entry.add_desktop_entry(Key::Version.to_string(), version);
+
+        Self {
             desktop_entry,
             browser_configs: browser_configs.clone(),
             app_dirs: app_dirs.clone(),
-        };
-        this.set_defaults();
-
-        this
+        }
     }
 
     pub fn from_path(
@@ -76,11 +84,12 @@ impl DesktopFile {
         app_dirs: &Rc<AppDirs>,
     ) -> Result<Self> {
         let desktop_entry = DesktopEntry::from_path(path, None::<&[String]>)?;
-        let mut this = Self::new(browser_configs, app_dirs);
-        this.desktop_entry = desktop_entry;
-        this.set_defaults();
 
-        Ok(this)
+        Ok(Self {
+            desktop_entry,
+            browser_configs: browser_configs.clone(),
+            app_dirs: app_dirs.clone(),
+        })
     }
 
     pub fn from_string(
@@ -90,32 +99,12 @@ impl DesktopFile {
         app_dirs: &Rc<AppDirs>,
     ) -> Result<Self> {
         let desktop_entry = DesktopEntry::from_str(path, str, None::<&[String]>)?;
-        let mut this = Self::new(browser_configs, app_dirs);
-        this.desktop_entry = desktop_entry;
-        this.set_defaults();
 
-        Ok(this)
-    }
-
-    fn set_defaults(&mut self) {
-        if self.get_version().is_none() {
-            let version =
-                Version::parse(config::VERSION.get_value()).unwrap_or(Version::new(0, 0, 0));
-            self.set_version(&version);
-        }
-
-        if self.get_id().is_none() {
-            let random_id: String = rand::thread_rng()
-                .sample_iter(&Alphanumeric)
-                .take(8)
-                .map(char::from)
-                .collect();
-            self.set_id(&random_id);
-        }
-
-        if self.get_category().is_none() {
-            self.set_category(&Category::Network);
-        }
+        Ok(Self {
+            desktop_entry,
+            browser_configs: browser_configs.clone(),
+            app_dirs: app_dirs.clone(),
+        })
     }
 
     pub fn get_path(&self) -> PathBuf {
@@ -847,6 +836,8 @@ impl DesktopFile {
         }
         if let Some(category) = self.get_category() {
             new_desktop_file.set_category_str(&category);
+        } else {
+            new_desktop_file.set_category(&Category::Network);
         }
 
         Ok(new_desktop_file)
