@@ -220,6 +220,12 @@ impl WebAppsPage {
 
             owned_desktop_files.push(Rc::new(RefCell::new(desktop_file)));
         }
+        owned_desktop_files.sort_by_key(|desktop_file| {
+            desktop_file
+                .borrow()
+                .get_name()
+                .unwrap_or(char::MAX.to_string())
+        });
 
         *app.has_created_apps.borrow_mut() = !owned_desktop_files.is_empty();
 
