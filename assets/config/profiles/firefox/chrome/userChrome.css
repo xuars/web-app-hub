@@ -2,7 +2,8 @@
   visibility: collapse !important;
 }
 #toolbar-menubar[inactive="true"] ~ #nav-bar {
-  visibility: collapse !important;
+  position: absolute !important;
+  top: -999px !important;
 }
 #navigator-toolbox {
   border-bottom: none !important;
@@ -16,5 +17,6 @@ Show the navigation bar for browser popups when a web apps asks for permissions.
   ~ toolbox
   #toolbar-menubar[inactive="true"]
   ~ #nav-bar {
-  visibility: visible !important;
+  position: relative !important;
+  top: 0px !important;
 }
