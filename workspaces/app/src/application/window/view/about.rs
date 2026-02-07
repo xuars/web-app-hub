@@ -12,8 +12,17 @@ use libadwaita::{
     prelude::{AdwDialogExt, PreferencesRowExt},
 };
 use semver::Version;
+use serde::{Deserialize, Serialize};
 use std::fmt::Write as _;
 
+static CREDITS_DOCUMENTATION: &str = include_str!("../../../../credits/documentation.yml");
+static CREDITS_TRANSLATIONS: &str = include_str!("../../../../credits/translations.yml");
+
+#[derive(Serialize, Deserialize)]
+pub struct CreditsYaml {
+    name: String,
+    link: Option<String>,
+}
 /// Downcast and translate nested ``AboutDialog`` widgets
 enum AboutDialogWidget {
     Changelog(ActionRow),
@@ -112,6 +121,8 @@ pub fn get_dialog() -> AboutDialog {
         .issue_url(config::ISSUES_URL.get_value())
         .release_notes(parse_release_notes_xml())
         .copyright(format!("© 2025 {}", config::DEVELOPER.get_value()))
+        .documenters(parse_documenters())
+        .translator_credits(parse_translators())
         .build();
 
     translate_about_dialog_widgets(&about_dialog);
@@ -202,4 +213,28 @@ fn translate_about_dialog_widgets(about_dialog: &AboutDialog) {
     };
 
     recursive_translate(&about_dialog.child().unwrap(), translate_widget);
+}
+
+fn parse_documenters() -> Vec<String> {
+    let yaml: Vec<CreditsYaml> = serde_yaml::from_str(CREDITS_DOCUMENTATION).unwrap_or_default();
+
+    yaml.into_iter()
+        .map(|credit| format!("{} {}", credit.name, credit.link.unwrap_or_default()))
+        .collect()
+}
+
+fn parse_translators() -> String {
+    let yaml: Vec<CreditsYaml> = serde_yaml::from_str(CREDITS_TRANSLATIONS).unwrap_or_default();
+    let mut credits = String::new();
+
+    for credit in yaml {
+        let _ = writeln!(
+            credits,
+            "{} {}",
+            credit.name,
+            credit.link.unwrap_or_default()
+        );
+    }
+
+    credits.trim().to_string()
 }
