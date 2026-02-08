@@ -1,6 +1,8 @@
 # Add your name to the translation credits
 # - name: <your name>
-#   link: <a link or email>     Optional
+#   language: <the language e.g. nl_NL>
+#   link: <a link or email>               Optional
 
 - name: PVermeer
+  language: nl
   link: https://pvermeer.org
