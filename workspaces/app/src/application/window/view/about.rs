@@ -11,7 +11,7 @@ static CREDITS_TRANSLATIONS: &str = include_str!("../../../../credits/translatio
 #[derive(Serialize, Deserialize)]
 pub struct CreditsYaml {
     name: String,
-    language: String,
+    language: Option<String>,
     link: Option<String>,
 }
 
@@ -113,7 +113,7 @@ fn parse_translators() -> String {
             credits,
             "{} ({}) {}",
             credit.name,
-            credit.language,
+            credit.language.unwrap_or_default(),
             credit.link.unwrap_or_default()
         );
     }
