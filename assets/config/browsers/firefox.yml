@@ -9,3 +9,5 @@ issues:
     - Unable to remove ui when not isolated
   nl:
     - UI kan niet worden verwijderd zonder isolatie
+  it:
+    - Impossibile rimuovere l'interfaccia utente se non isolata
