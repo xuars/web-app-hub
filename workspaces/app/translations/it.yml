@@ -1,0 +1,159 @@
+_version: 1
+
+home:
+  title: Home
+  get_started: |
+    Per iniziare, puoi creare la tua prima web app.
+    La scheda del browser mostra i browser supportati e installati.
+    La scheda info mostra alcuni suggerimenti e trucchi + alcune informazioni generali.
+  button:
+    go_to_web_apps: Vai alle Web Apps
+    more_information: Più informazioni
+
+web_apps:
+  title: Web Apps
+  no_apps:
+    title: Nessuna web app trovata
+    description: Prova ad aggiungerne una!
+  no_name: Nessun nome
+  button:
+    new_app: Nuova app
+  web_app_view:
+    new_app:
+      title: Nuova web app
+      header:
+        name: Nessun nome...
+    name:
+      title: Nome web app
+      validate: Il nome è vuoto
+    url:
+      title: URL del sito web
+      validate: Inserisci un URL valido (es. https://example.com)
+    isolate:
+      title: Isola
+      subtitle: Usa un profilo isolato
+      disabled: Il browser selezionato non è in grado di isolare
+    maximize:
+      title: Massimizza
+      subtitle: Avvia sempre l'app massimizzata
+      disabled: Il browser selezionato non è in grado di avviarsi massimizzato
+    browser:
+      title: Browser
+      subtitle: Scegli un browser
+      no_browser: Nessun browser
+    optional:
+      title: Opzionale
+      subtitle: Impostazioni opzionali per desktop con menu
+      dialog:
+        title: Impostazioni Opzionali
+        menu_group:
+          title: Menu
+          subtitle: Impostazioni per desktop che utilizzano un menu app categorizzato
+          description:
+            title: Breve descrizione dell'app
+          category:
+            title: Categoria
+            subtitle: Scegli una categoria
+            categories:
+              audio_video: Multimedia
+              audio: Audio
+              video: Video
+              development: Sviluppo
+              education: Educazione
+              game: Gioco
+              graphics: Grafica
+              network: Rete / Internet
+              office: Ufficio
+              science: Scienza
+              settings: Impostazioni
+              system: Sistema
+              utility: Utilità
+    icon:
+      title: Icone
+      dialog:
+        title: Scegli un'icona
+        save: Salva
+        cancel: Annulla
+      file_dialog:
+        title: Scegli un'immagine
+        filter: Immagini
+      no_icons:
+        title: Nessuna icona trovata
+        description: Prova ad aggiungerne una
+      button:
+        reset: Reimposta
+        add_icon: Aggiungi icona
+    button:
+      reset: Reimposta
+      icon: Cambia icona
+      open: Apri
+      save: Salva
+      delete: Elimina
+    toast:
+      reset: Reimposta
+
+browsers:
+  title: Browser
+  no_browsers:
+    title: Nessun browser compatibile trovato
+    description: Prova ad installarne uno!
+  not_installed:
+    title: Supportato ma non installato
+  capabilities:
+    title: Capacità
+    isolate: Può isolare le tue web app
+    maximize: Può avviare le web app massimizzate
+    setup: Configura il browser con %{key_bind}
+    more_info: Vedi 'Info -> Suggerimenti e trucchi' per maggiori informazioni
+  issues:
+    title: Problemi noti
+
+info:
+  title: Info
+  tips:
+    title: Suggerimenti e trucchi
+    text_pango: |
+      <b>Le icone della barra delle applicazioni non corrispondono a una Web App appena creata.</b>
+      Il desktop può essere lento nell'aggiornamento e nell'abbinamento di una Web App appena creata. Riavvia la Web App e corrisponderà con l'icona corretta.
+
+      <b>Configura il browser con un profilo isolato</b>
+      Per i browser basati su Chromium, fai clic con il pulsante destro del mouse sulla barra del titolo e seleziona "Apri finestra del browser" o premi &lt;Ctrl+T&gt;.
+
+      Per i browser basati su Firefox, premi &lt;Alt&gt;. Vai a `Visualizza` e abilita `Barra dei menu`. Questo dovrebbe impostare Firefox in una modalità in qualche modo normale con elementi di menu. Disabilita la `Barra dei menu` per rimuovere nuovamente gli elementi dell'interfaccia utente.
+
+      Per il browser Zen, premi &lt;Alt+Ctrl+C&gt;.
+
+      Questo può essere utilizzato per configurare il browser all'interno del profilo isolato e installare le estensioni.
+
+      <b>Disinstallazione</b>
+      La disinstallazione di questa app <b>non</b> rimuove le Web App create. La rimozione dei dati dell'app di questa applicazione rimuoverà le icone e i profili di isolamento dei browser di sistema, ma le Web App potrebbero comunque comparire sul desktop. Per rimuovere tutti i dati, elimina tutte le Web App prima di eliminare questa applicazione. Ciò garantirà che tutto venga rimosso.
+  permissions:
+    title: Permessi
+    text_pango: |
+      <b>filesystem=xdg-data/applications:create</b>
+      Utilizzato per creare nuove Web Application. Di solito si risolve in ~/.local/share/applications.
+
+      <b>filesystem=~/.var/app:create</b>
+      Utilizzato per creare profili isolati per i browser flatpak. Per alcuni browser flatpak è necessario creare una directory nella loro sandbox per l'isolamento del profilo. Inoltre, i browser firefox necessitano di un profilo aggiornato per creare un'interfaccia utente minima. Il browser non può uscire dal proprio filesystem, quindi questa applicazione deve entrarvi.
+
+      Ad esempio, i browser basati su Firefox non creano la directory del profilo isolato e falliranno quando la directory non esiste.
+
+      I profili isolati dei browser installati nel sistema vengono salvati nella nostra directory xdg-data/profiles.
+
+      <b>filesystem=xdg-data/flatpak/app:ro &amp; filesystem=/var/lib/flatpak/app:ro</b>
+      Utilizzato per recuperare le icone dei browser flatpak.
+
+      <b>talk-name=org.freedesktop.Flatpak</b>
+      Utilizzato per eseguire comandi al di fuori della sandbox. Questo è necessario per recuperare le informazioni del browser flatpak e per eseguire la Web App creata da questa applicazione.
+
+app_menu:
+  about:
+    title: Informazioni su %{app_name}
+  reset:
+    title: Reimposta app
+    dialog:
+      ok: Ho capito
+      cancel: Annulla
+      text: |
+        Questo reimposterà i file di configurazione (es.: configurazioni del browser).
+        Non rimuoverà le tue web app create.
